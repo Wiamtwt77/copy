@@ -49,7 +49,7 @@
   <!-- إعداد اللعبة -->
   <div id="setup-screen" class="card">
     <h2>المحكمة السرية - إعداد الجلسة</h2>
-    <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem;">أدخل أسماء المشاركين لبدء جلسة المحكمة واستمتاع الأصدقاء بالأدوار.</p>
+    <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem;">أدخل أسماء المشاركين لبدء جلسة المحكمة واستمتع بالأدوار والأسرار.</p>
     <div id="player-inputs-container">
       <input type="text" class="player-name-input" placeholder="اسم اللاعب 1" value="إيفا">
       <input type="text" class="player-name-input" placeholder="اسم اللاعب 2" value="سارة">
@@ -213,7 +213,7 @@
 
     for (const p of gameState.players) {
       try {
-        const res = await fetch('', {
+        const res = await fetch(window.location.pathname, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'generate_initial_cards' })
@@ -323,7 +323,7 @@
 
     if (card.effectType === 'REVEAL_CARDS') {
       try {
-        const res = await fetch('', {
+        const res = await fetch(window.location.pathname, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'instant_reveal_cards', targetId, hands: gameState.hands })
@@ -338,7 +338,7 @@
     } 
     else if (card.effectType === 'SWAP_CARD') {
       try {
-        const res = await fetch('', {
+        const res = await fetch(window.location.pathname, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'instant_swap_card', playerId: p.id, cardId: card.id, hands: gameState.hands })
@@ -384,7 +384,7 @@
   async function resolveRoundOnServer() {
     document.getElementById('game-screen').style.display = 'none';
     try {
-      const res = await fetch('', {
+      const res = await fetch(window.location.pathname, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -428,7 +428,7 @@
 
     document.getElementById('voting-screen').style.display = 'none';
     try {
-      const res = await fetch('', {
+      const res = await fetch(window.location.pathname, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -462,7 +462,7 @@
   async function buyCard(cost) {
     const p = gameState.players[gameState.activePlayerIndex];
     try {
-      const res = await fetch('', {
+      const res = await fetch(window.location.pathname, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'buy_card', players: gameState.players, playerId: p.id, cost })
