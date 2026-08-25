@@ -9,9 +9,12 @@ const BASE_CARDS = [
   { baseId: 'c7', name: 'بطاقة تحالف سري', description: 'تقاسم الأرباح والخسائر مناصفة (50%) لمدة 3 جولات.', effectType: 'ALLIANCE_OFFER', power: 0, cost: 1, targetRequired: true, rarity: 'شائعة' },
   { baseId: 'c8', name: 'بطاقة رسالة خاصة', description: 'تصل الرسالة إلى اللاعب المطلوب حصرياً ودون كشفك.', effectType: 'MESSAGE', power: 0, cost: 1, targetRequired: true, rarity: 'شائعة' },
   
-  // بطاقات نادرة واستثنائية
-  { baseId: 'c4', name: 'بطاقة كشف الأوراق', description: 'تكشف بطاقات لاعب آخر فوراً في أوانها.', effectType: 'REVEAL_CARDS', power: 0, cost: 3, targetRequired: true, rarity: 'نادرة' },
+  // بطاقات بتكلفة 2 سمعة
   { baseId: 'c5', name: 'بطاقة تبديل بطاقة', description: 'تستبدل هذه البطاقة ببطاقة عشوائية جديدة فوراً.', effectType: 'SWAP_CARD', power: 0, cost: 2, targetRequired: false, rarity: 'نادرة' },
+  { baseId: 'c11', name: 'بطاقة درع الحماية', description: 'تحميك من الهجمات الموجهة إليك في هذه الجولة.', effectType: 'SHIELD', power: 1, cost: 2, targetRequired: false, rarity: 'نادرة' },
+
+  // بطاقات نادرة واستثنائية (تكلفة 3 و 4 سمعة)
+  { baseId: 'c4', name: 'بطاقة كشف الأوراق', description: 'تكشف بطاقات لاعب آخر فوراً في أوانها.', effectType: 'REVEAL_CARDS', power: 0, cost: 3, targetRequired: true, rarity: 'نادرة' },
   { baseId: 'c6', name: 'بطاقة كشف المهاجم', description: 'تكشف هوية اللاعب في الدليل فوراً إذا هاجمك.', effectType: 'REVEAL_ATTACKER', power: 0, cost: 3, targetRequired: false, rarity: 'نادرة' },
   { baseId: 'c9', name: 'بطاقة نفوذ مظلم (خطرة)', description: 'تمنحك 3 نقاط سمعة فوراً، لكنها قد تنقلب عليك.', effectType: 'RISKY_BOOST', power: 3, cost: 3, targetRequired: false, rarity: 'استثنائية' },
   { baseId: 'c10', name: 'بطاقة هجوم مدمر (عالي الخطورة)', description: 'تخصم 3 نقاط من الهدف، لكنها قد تنقلب بضعف الضرر عليك.', effectType: 'HEAVY_ATTACK', power: 3, cost: 4, targetRequired: true, rarity: 'استثنائية' }
@@ -153,8 +156,11 @@ async function handler(req, res) {
     
     buyer.reputation -= cardCost;
     
-    // استخدام التكلفة الأقل من أو تساوي المبلغ المختار لضمان إيجاد بطاقة دائماً دون خطأ
-    let pool = BASE_CARDS.filter(c => (c.cost || 1) <= cardCost);
+    // البحث المرن عن البطاقات التي تطابق التكلفة بدقة أو أقل منها لضمان عدم حدوث خطأ أبداً
+    let pool = BASE_CARDS.filter(c => (c.cost || 1) === cardCost);
+    if (!pool.length) {
+      pool = BASE_CARDS.filter(c => (c.cost || 1) <= cardCost);
+    }
     if (!pool.length) pool = BASE_CARDS;
     
     const boughtCard = getRandomCards(pool, 1)[0];
@@ -324,7 +330,7 @@ ${roundEventLogs.length ? roundEventLogs.map(e => `- ${e}`).join('\n') : '- جو
       if (winner !== 'NONE' && wrongTarget) {
         wrongTarget.reputation += 2;
         for (const p of players) { if (active(p)) p.reputation = Math.max(0, p.reputation - 1); }
-        verdictMsg = `أخطأ التصويت الجماعي ولم يكن (${wrongTarget.name}) هو الجاني؛ فحصل على تعويض (+2 نقطة), وعوقب المصوتون بخصم نقطة.`;
+        verdictMsg = `أخطأ التصويت الجماعي ولم يكن (${wrongTarget.name}) هو الجاني؛ فحصل على تعويض (+2 نقطة)، وعوقب المصوتون بخصم نقطة.`;
       } else {
         verdictMsg = 'انتهى التصويت الجماعي دون إدانة واضحة.';
       }
