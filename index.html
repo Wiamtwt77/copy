@@ -151,7 +151,7 @@
       </div>
       <div class="player-card">
         <div>
-          <h4>بطاقة استبدال / استثنائية</h4>
+          <h4>بطاقة تبديل / درع</h4>
           <p class="text-muted">تكلفة الشراء: 2 نقاط سمعة</p>
         </div>
         <button class="btn mt-2" onclick="buyCard(2)">شراء (2 سمعة)</button>
@@ -474,7 +474,6 @@
       }
       gameState.players = data.players;
       
-      // التصحيح البرمجي هنا (ضمان وجود مصفوفة ليد اللاعب وإضافة البطاقة بشكل صحيح)
       if (!Array.isArray(gameState.hands[p.id])) {
         gameState.hands[p.id] = [];
       }
