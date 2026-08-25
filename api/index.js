@@ -156,7 +156,6 @@ async function handler(req, res) {
     
     buyer.reputation -= cardCost;
     
-    // البحث المرن عن البطاقات التي تطابق التكلفة بدقة أو أقل منها لضمان عدم حدوث خطأ أبداً
     let pool = BASE_CARDS.filter(c => (c.cost || 1) === cardCost);
     if (!pool.length) {
       pool = BASE_CARDS.filter(c => (c.cost || 1) <= cardCost);
