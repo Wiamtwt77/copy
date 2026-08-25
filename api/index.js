@@ -150,9 +150,13 @@ async function handler(req, res) {
     if (!buyer || buyer.reputation < cardCost) {
       return json(res, 400, { error: 'INSUFFICIENT_REPUTATION', message: `رصيد السمعة لا يكفي لشراء هذه البطاقة (تتطلب ${cardCost} نقطة).` });
     }
+    
     buyer.reputation -= cardCost;
-    let pool = BASE_CARDS.filter(c => (c.cost || 1) === cardCost);
+    
+    // استخدام التكلفة الأقل من أو تساوي المبلغ المختار لضمان إيجاد بطاقة دائماً دون خطأ
+    let pool = BASE_CARDS.filter(c => (c.cost || 1) <= cardCost);
     if (!pool.length) pool = BASE_CARDS;
+    
     const boughtCard = getRandomCards(pool, 1)[0];
     return json(res, 200, { players, boughtCard });
   }
@@ -320,7 +324,7 @@ ${roundEventLogs.length ? roundEventLogs.map(e => `- ${e}`).join('\n') : '- جو
       if (winner !== 'NONE' && wrongTarget) {
         wrongTarget.reputation += 2;
         for (const p of players) { if (active(p)) p.reputation = Math.max(0, p.reputation - 1); }
-        verdictMsg = `أخطأ التصويت الجماعي ولم يكن (${wrongTarget.name}) هو الجاني؛ فحصل على تعويض (+2 نقطة)، وعوقب المصوتون بخصم نقطة.`;
+        verdictMsg = `أخطأ التصويت الجماعي ولم يكن (${wrongTarget.name}) هو الجاني؛ فحصل على تعويض (+2 نقطة), وعوقب المصوتون بخصم نقطة.`;
       } else {
         verdictMsg = 'انتهى التصويت الجماعي دون إدانة واضحة.';
       }
