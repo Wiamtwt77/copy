@@ -213,7 +213,7 @@
 
     for (const p of gameState.players) {
       try {
-        const res = await fetch(window.location.pathname, {
+        const res = await fetch('/api'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'generate_initial_cards' })
@@ -323,7 +323,7 @@
 
     if (card.effectType === 'REVEAL_CARDS') {
       try {
-        const res = await fetch(window.location.pathname, {
+        const res = await fetch('/api'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'instant_reveal_cards', targetId, hands: gameState.hands })
@@ -338,7 +338,7 @@
     } 
     else if (card.effectType === 'SWAP_CARD') {
       try {
-        const res = await fetch(window.location.pathname, {
+        const res = await fetch('/api'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'instant_swap_card', playerId: p.id, cardId: card.id, hands: gameState.hands })
@@ -384,7 +384,7 @@
   async function resolveRoundOnServer() {
     document.getElementById('game-screen').style.display = 'none';
     try {
-      const res = await fetch(window.location.pathname, {
+      const res = await fetch('/api'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -428,7 +428,7 @@
 
     document.getElementById('voting-screen').style.display = 'none';
     try {
-      const res = await fetch(window.location.pathname, {
+      const res = await fetch('/api'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -462,7 +462,7 @@
   async function buyCard(cost) {
     const p = gameState.players[gameState.activePlayerIndex];
     try {
-      const res = await fetch(window.location.pathname, {
+      const res = await fetch('/api'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'buy_card', players: gameState.players, playerId: p.id, cost })
